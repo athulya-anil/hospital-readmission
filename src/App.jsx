@@ -1,5 +1,7 @@
 import React from "react";
+import { Routes, Route, Link } from "react-router-dom";
 import USMap from "./components/USMap";
+import ByAgeGroupPage from "./pages/ByAgeGroupPage";
 
 const App = () => {
   return (
@@ -11,8 +13,8 @@ const App = () => {
             Hospital Readmission Trends
           </h1>
           <ul className="flex space-x-4 text-gray-600 font-medium">
-            <li><a href="#" className="hover:text-blue-500">Home</a></li>
-            <li><a href="#" className="hover:text-blue-500">By Age Group</a></li>
+            <li><Link to="/" className="hover:text-blue-500">Home</Link></li>
+            <li><Link to="/by-age-group" className="hover:text-blue-500">By Age Group</Link></li>
             <li><a href="#" className="hover:text-blue-500">By Condition</a></li>
             <li><a href="#" className="hover:text-blue-500">By Length of Stay</a></li>
             <li><a href="#" className="hover:text-blue-500">By Diagnoses</a></li>
@@ -23,18 +25,32 @@ const App = () => {
         </nav>
       </header>
 
-      {/* Overview */}
-      <section className="px-6 py-6 bg-gray-50 border-b">
-        <h2 className="text-xl font-semibold mb-2">Overview</h2>
-        <p className="text-gray-700 max-w-3xl">
-          This interactive dashboard visualizes hospital readmission rates across the United States using CMS data. Hover over a state to view detailed statistics including discharge count and readmission percentage.
-        </p>
-      </section>
+      {/* Route-based content */}
+      <Routes>
+        {/* Home Page */}
+        <Route
+          path="/"
+          element={
+            <>
+              {/* Overview */}
+              <section className="px-6 py-6 bg-gray-50 border-b">
+                <h2 className="text-xl font-semibold mb-2">Overview</h2>
+                <p className="text-gray-700 max-w-3xl">
+                  This interactive dashboard visualizes hospital readmission rates across the United States using CMS data. Hover over a state to view detailed statistics including discharge count and readmissions.
+                </p>
+              </section>
 
-      {/* US Map Section */}
-      <main className="p-6">
-        <USMap />
-      </main>
+              {/* US Map Section */}
+              <main className="p-6">
+                <USMap />
+              </main>
+            </>
+          }
+        />
+
+        {/* By Age Group Page */}
+        <Route path="/by-age-group" element={<ByAgeGroupPage />} />
+      </Routes>
     </div>
   );
 };
