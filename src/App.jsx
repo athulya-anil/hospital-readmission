@@ -2,6 +2,8 @@ import React from "react";
 import { Routes, Route, Link } from "react-router-dom";
 import USMap from "./components/USMap";
 import ByAgeGroupPage from "./pages/ByAgeGroupPage";
+import ByConditionPage from "./pages/ByConditionPage";
+
 
 const App = () => {
   return (
@@ -15,7 +17,7 @@ const App = () => {
           <ul className="flex space-x-4 text-gray-600 font-medium">
             <li><Link to="/" className="hover:text-blue-500">Home</Link></li>
             <li><Link to="/by-age-group" className="hover:text-blue-500">By Age Group</Link></li>
-            <li><a href="#" className="hover:text-blue-500">By Condition</a></li>
+	    <li><Link to="/by-condition" className="hover:text-blue-500">By Condition</Link></li>
             <li><a href="#" className="hover:text-blue-500">By Length of Stay</a></li>
             <li><a href="#" className="hover:text-blue-500">By Diagnoses</a></li>
             <li><a href="#" className="hover:text-blue-500">By Medication</a></li>
@@ -50,6 +52,7 @@ const App = () => {
 
         {/* By Age Group Page */}
         <Route path="/by-age-group" element={<ByAgeGroupPage />} />
+	<Route path="/by-condition" element={<ByConditionPage />} />
       </Routes>
     </div>
   );
