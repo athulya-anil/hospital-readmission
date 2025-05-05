@@ -7,28 +7,29 @@ const ReadmissionByMedication = () => {
 
   useEffect(() => {
     d3.csv('/hospital-readmission/hospital_readmissions.csv').then((data) => {
-      const filtered = data.filter(d => d.medication && d.readmitted);
+      const filtered = data.filter(d => d.n_medications && d.readmitted);
+      const parsed = filtered.map(d => ({
+        n_medications: +d.n_medications,
+        readmitted: d.readmitted.trim().toLowerCase() === 'yes' ? 1 : 0,
+      }));
 
-      const rates = Array.from(
-        d3.rollup(
-          filtered,
-          v => d3.mean(v, d => d.readmitted === 'yes' ? 1 : 0) * 100,
-          d => d.medication
-        )
+      const rateMap = d3.rollup(
+        parsed,
+        v => d3.mean(v, d => d.readmitted) * 100,
+        d => d.n_medications
       );
 
-      const top = rates
-        .sort((a, b) => b[1] - a[1])
-        .slice(0, 10);
+      const sorted = Array.from(rateMap.entries()).sort((a, b) => a[0] - b[0]);
+      const x = sorted.map(d => d[0]);
+      const y = sorted.map(d => d[1]);
 
-      const x = top.map(d => d[1]);
-      const y = top.map(d => d[0]);
+      const peakPoints = sorted.filter(([_, val]) => val >= 100).map(([x, y]) => ({ x, y }));
 
-      setPlotData({ x, y });
+      setPlotData({ x, y, peaks: peakPoints });
     });
   }, []);
 
-  if (!plotData) return <p>Loading medication chart...</p>;
+  if (!plotData) return <p>Loading readmission chart...</p>;
 
   return (
     <Plot
@@ -36,17 +37,42 @@ const ReadmissionByMedication = () => {
         {
           x: plotData.x,
           y: plotData.y,
-          type: 'bar',
-          orientation: 'h',
-          marker: { color: 'rgba(59, 130, 246, 0.7)' }, // Tailwind blue-500
+          type: 'scatter',
+          mode: 'lines+markers',
+          name: 'Readmission Rate',
+          line: { color: '#1d4ed8', width: 2 },
+          marker: { color: '#1d4ed8', size: 4 },
+        },
+        {
+          x: plotData.peaks.map(p => p.x),
+          y: plotData.peaks.map(p => p.y),
+          type: 'scatter',
+          mode: 'markers',
+          name: '100% Readmission',
+          marker: {
+            color: 'red',
+            symbol: 'x',
+            size: 6,        // smaller size
+            opacity: 0.9    // optional: slightly transparent
+            // no outline
+          },
         },
       ]}
       layout={{
-        title: 'Top 10 Medications by Readmission Rate',
-        xaxis: { title: 'Readmission Rate (%)' },
-        yaxis: { title: 'Medication', automargin: true },
-        margin: { l: 200, t: 50 },
+        title: 'Readmission by Medication',
+        xaxis: {
+          title: 'Number of Medications Prescribed at Admission',
+        },
+        yaxis: {
+          title: 'Readmission Rate (%)',
+          range: [0, 110],
+        },
         height: 500,
+        margin: { t: 80, b: 60, l: 70, r: 40 },
+        legend: {
+          orientation: 'h',
+          y: -0.2,
+        },
       }}
     />
   );

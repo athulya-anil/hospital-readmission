@@ -24,17 +24,16 @@ const App = () => {
 	    <li><Link to="/by-length-of-stay" className="hover:text-blue-500">By Length of Stay</Link></li>
 	    <li><Link to="/by-diagnosis" className="hover:text-blue-500">By Diagnosis</Link></li>
 	    <li><Link to="/by-medication" className="hover:text-blue-500">By Medication</Link></li>
-	    <li>
- 	     <a
-    		href="/hospital-readmission/process-book.pdf"
-    		className="hover:text-blue-500"
-    		target="_blank"
-    		rel="noopener noreferrer"
-    		download
-  	       >
-   		Process Book
- 	       </a>
-	    </li>
+            <li>
+              <a
+               href="/hospital-readmission/process-book.pdf"
+               className="hover:text-blue-500"
+               target="_blank"
+               rel="noopener noreferrer"
+              >
+               Process Book
+              </a>
+            </li>
             <li><a href="#" className="hover:text-blue-500">Demo</a></li>
           </ul>
         </nav>

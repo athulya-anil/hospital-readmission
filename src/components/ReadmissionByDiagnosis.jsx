@@ -7,24 +7,27 @@ const ReadmissionByDiagnosis = () => {
 
   useEffect(() => {
     d3.csv('/hospital-readmission/hospital_readmissions.csv').then((data) => {
-      const filtered = data.filter(d => d.diagnosis && d.readmitted);
+      // Filter for rows with a diagnosis and that were readmitted
+      const filtered = data.filter(d => d.diag_1 && d.readmitted === 'yes');
 
-      const rates = Array.from(
+      // Count readmitted patients per diagnosis code
+      const diagnosisCounts = Array.from(
         d3.rollup(
           filtered,
-          v => d3.mean(v, d => d.readmitted === 'yes' ? 1 : 0) * 100,
-          d => d.diagnosis
+          v => v.length,
+          d => d.diag_1
         )
       );
 
-      const top = rates
+      // Sort and take top 10 most common diagnoses among readmitted
+      const topDiagnoses = diagnosisCounts
         .sort((a, b) => b[1] - a[1])
         .slice(0, 10);
 
-      const x = top.map(d => d[1]);
-      const y = top.map(d => d[0]);
+      const labels = topDiagnoses.map(d => d[0]);
+      const values = topDiagnoses.map(d => d[1]);
 
-      setPlotData({ x, y });
+      setPlotData({ labels, values });
     });
   }, []);
 
@@ -34,23 +37,22 @@ const ReadmissionByDiagnosis = () => {
     <Plot
       data={[
         {
-          x: plotData.x,
-          y: plotData.y,
-          type: 'bar',
-          orientation: 'h',
-          marker: { color: 'rgba(234, 88, 12, 0.7)' }, // Tailwind orange-600
+          type: 'pie',
+          labels: plotData.labels,
+          values: plotData.values,
+          hole: 0.4, // donut chart
+          textinfo: 'label+percent',
         },
       ]}
       layout={{
-        title: 'Top 10 Diagnoses by Readmission Rate',
-        xaxis: { title: 'Readmission Rate (%)' },
-        yaxis: { title: 'Diagnosis', automargin: true },
-        margin: { l: 200, t: 50 },
+        title: 'Top 10 Diagnoses for Readmitted Patients (by Count)',
         height: 500,
+        showlegend: true,
       }}
     />
   );
 };
 
 export default ReadmissionByDiagnosis;
+
 
