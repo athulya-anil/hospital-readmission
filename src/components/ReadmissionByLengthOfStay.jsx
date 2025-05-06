@@ -7,29 +7,24 @@ const ReadmissionByLengthOfStay = () => {
 
   useEffect(() => {
     d3.csv('/hospital-readmission/hospital_readmissions.csv').then((data) => {
-      const filtered = data.filter(d => d.time_in_hospital && d.readmitted);
+      const filtered = data.filter(d => d.time_in_hospital && d.readmitted !== '');
 
-      const bucketed = filtered.map(d => {
-        const days = +d.time_in_hospital;
-        if (days <= 3) return { ...d, bucket: '1–3 days' };
-        if (days <= 7) return { ...d, bucket: '4–7 days' };
-        if (days <= 14) return { ...d, bucket: '8–14 days' };
-        return { ...d, bucket: '15+ days' };
-      });
+      const parsed = filtered.map(d => ({
+        ...d,
+        time_in_hospital: +d.time_in_hospital,
+        readmitted: d.readmitted.trim().toLowerCase(),
+      }));
 
-      const rateByBucket = Array.from(
+      const rateByDay = Array.from(
         d3.rollup(
-          bucketed,
+          parsed,
           v => d3.mean(v, d => d.readmitted === 'yes' ? 1 : 0) * 100,
-          d => d.bucket
+          d => d.time_in_hospital
         )
-      ).sort((a, b) => {
-        const order = ['1–3 days', '4–7 days', '8–14 days', '15+ days'];
-        return order.indexOf(a[0]) - order.indexOf(b[0]);
-      });
+      ).sort((a, b) => a[0] - b[0]);
 
-      const x = rateByBucket.map(d => d[0]);
-      const y = rateByBucket.map(d => d[1]);
+      const x = rateByDay.map(d => d[0]);
+      const y = rateByDay.map(d => d[1]);
 
       setPlotData({ x, y });
     });
@@ -43,13 +38,15 @@ const ReadmissionByLengthOfStay = () => {
         {
           x: plotData.x,
           y: plotData.y,
-          type: 'bar',
-          marker: { color: 'rgba(34, 197, 94, 0.7)' }, // Tailwind green-500
+          type: 'scatter',
+          mode: 'lines+markers',
+          line: { shape: 'linear' },
+          marker: { size: 6, color: 'rgba(34, 197, 94, 0.8)' },
         },
       ]}
       layout={{
-        title: 'Readmission Rate by Length of Stay',
-        xaxis: { title: 'Hospital Stay Duration' },
+        title: 'Readmission Rate by Hospital Stay (Daily)',
+        xaxis: { title: 'Days in Hospital', dtick: 1 },
         yaxis: { title: 'Readmission Rate (%)' },
         margin: { t: 50 },
         height: 450,

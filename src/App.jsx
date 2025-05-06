@@ -20,10 +20,10 @@ const App = () => {
           <ul className="flex space-x-4 text-gray-600 font-medium">
             <li><Link to="/" className="hover:text-blue-500">Home</Link></li>
             <li><Link to="/by-age-group" className="hover:text-blue-500">By Age Group</Link></li>
-	    <li><Link to="/by-condition" className="hover:text-blue-500">By Condition</Link></li>
 	    <li><Link to="/by-length-of-stay" className="hover:text-blue-500">By Length of Stay</Link></li>
+	    <li><Link to="/by-condition" className="hover:text-blue-500">By Condition</Link></li>
 	    <li><Link to="/by-diagnosis" className="hover:text-blue-500">By Diagnosis</Link></li>
-	    <li><Link to="/by-medication" className="hover:text-blue-500">By Medication</Link></li>
+	    <li><Link to="/by-medication" className="hover:text-blue-500">By Number of Medications</Link></li>
             <li>
               <a
                href="/hospital-readmission/process-book.pdf"
@@ -64,8 +64,8 @@ const App = () => {
 
         {/* By Age Group Page */}
         <Route path="/by-age-group" element={<ByAgeGroupPage />} />
-	<Route path="/by-condition" element={<ByConditionPage />} />
 	<Route path="/by-length-of-stay" element={<ByLengthOfStayPage />} />
+	<Route path="/by-condition" element={<ByConditionPage />} />
 	<Route path="/by-diagnosis" element={<ByDiagnosisPage />} />
 	<Route path="/by-medication" element={<ByMedicationPage />} />
       </Routes>

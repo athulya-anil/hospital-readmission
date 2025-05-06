@@ -59,7 +59,7 @@ const ReadmissionByMedication = () => {
         },
       ]}
       layout={{
-        title: 'Readmission by Medication',
+        title: 'Number of Distinct Medications Administered',
         xaxis: {
           title: 'Number of Medications Prescribed at Admission',
         },

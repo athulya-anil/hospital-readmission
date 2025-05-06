@@ -55,4 +55,3 @@ const ReadmissionByCondition = () => {
 };
 
 export default ReadmissionByCondition;
-
