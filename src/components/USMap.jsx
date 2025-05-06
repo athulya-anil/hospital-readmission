@@ -1,31 +1,74 @@
-// src/components/USMap.jsx
 import React from "react";
-import { ComposableMap, Geographies, Geography } from "react-simple-maps";
-import { scaleSequential } from "d3-scale";
-import { interpolateReds } from "d3-scale-chromatic";
-import { Tooltip } from "react-tooltip";
+import Plot from "react-plotly.js";
 
-const geoUrl = "https://cdn.jsdelivr.net/npm/us-atlas@3/states-10m.json";
-
-// Readmission rates by state
-const stateReadmissionRates = {
-  AK: 14.49, AL: 16.79, AR: 16.16, AZ: 15.18, CA: 17.68, CO: 13.92, CT: 17.23,
-  DC: 17.91, DE: 15.73, FL: 17.69, GA: 17.52, HI: 15.57, IA: 14.38, ID: 11.17,
-  IL: 17.79, IN: 16.76, KS: 13.25, KY: 17.87, LA: 17.18, MA: 17.16, MD: 16.91,
-  ME: 13.68, MI: 18.59, MN: 14.51, MO: 17.12, MS: 17.66, MT: 12.67, NC: 15.84,
-  ND: 14.45, NE: 14.45, NH: 15.92, NJ: 17.87, NM: 13.99, NV: 18.16, NY: 16.94,
-  OH: 17.64, OK: 15.19, OR: 13.63, PA: 16.4, RI: 15.46, SC: 16.41, SD: 10.33,
-  TN: 16.46, TX: 16.7, UT: 11.38, VA: 16.49, VT: 16.75, WA: 14.94, WI: 15.82,
-  WV: 18.81, WY: 13.47
+// Derived from CMS dataset (fully calculated)
+const stateData = {
+  AK: { rate: 14.49, discharges: 4031, readmissions: 584 },
+  AL: { rate: 16.79, discharges: 35359, readmissions: 5936 },
+  AR: { rate: 16.16, discharges: 31207, readmissions: 5042 },
+  AZ: { rate: 15.18, discharges: 43529, readmissions: 6607 },
+  CA: { rate: 17.68, discharges: 176090, readmissions: 31138 },
+  CO: { rate: 13.92, discharges: 34230, readmissions: 4765 },
+  CT: { rate: 17.23, discharges: 28597, readmissions: 4929 },
+  DC: { rate: 17.91, discharges: 4471, readmissions: 801 },
+  DE: { rate: 15.73, discharges: 9433, readmissions: 1484 },
+  FL: { rate: 17.69, discharges: 108804, readmissions: 19248 },
+  GA: { rate: 17.52, discharges: 50620, readmissions: 8867 },
+  HI: { rate: 15.57, discharges: 9444, readmissions: 1470 },
+  IA: { rate: 14.38, discharges: 24142, readmissions: 3472 },
+  ID: { rate: 11.17, discharges: 11783, readmissions: 1316 },
+  IL: { rate: 17.79, discharges: 74813, readmissions: 13309 },
+  IN: { rate: 16.76, discharges: 36085, readmissions: 6049 },
+  KS: { rate: 13.25, discharges: 17851, readmissions: 2364 },
+  KY: { rate: 17.87, discharges: 31564, readmissions: 5641 },
+  LA: { rate: 17.18, discharges: 34723, readmissions: 5968 },
+  MA: { rate: 17.16, discharges: 43541, readmissions: 7472 },
+  MD: { rate: 16.91, discharges: 37252, readmissions: 6298 },
+  ME: { rate: 13.68, discharges: 13119, readmissions: 1794 },
+  MI: { rate: 18.59, discharges: 62574, readmissions: 11628 },
+  MN: { rate: 14.51, discharges: 27473, readmissions: 3989 },
+  MO: { rate: 17.12, discharges: 42053, readmissions: 7202 },
+  MS: { rate: 17.66, discharges: 25929, readmissions: 4579 },
+  MT: { rate: 12.67, discharges: 9946, readmissions: 1260 },
+  NC: { rate: 15.84, discharges: 57779, readmissions: 9154 },
+  ND: { rate: 14.45, discharges: 6564, readmissions: 949 },
+  NE: { rate: 14.45, discharges: 14261, readmissions: 2061 },
+  NH: { rate: 15.92, discharges: 10087, readmissions: 1606 },
+  NJ: { rate: 17.87, discharges: 52880, readmissions: 9451 },
+  NM: { rate: 13.99, discharges: 16652, readmissions: 2329 },
+  NV: { rate: 18.16, discharges: 18480, readmissions: 3356 },
+  NY: { rate: 16.94, discharges: 97263, readmissions: 16474 },
+  OH: { rate: 17.64, discharges: 65353, readmissions: 11530 },
+  OK: { rate: 15.19, discharges: 28461, readmissions: 4325 },
+  OR: { rate: 13.63, discharges: 21413, readmissions: 2920 },
+  PA: { rate: 16.4, discharges: 77883, readmissions: 12764 },
+  RI: { rate: 15.46, discharges: 9647, readmissions: 1492 },
+  SC: { rate: 16.41, discharges: 35069, readmissions: 5757 },
+  SD: { rate: 10.33, discharges: 11021, readmissions: 1139 },
+  TN: { rate: 16.46, discharges: 42213, readmissions: 6952 },
+  TX: { rate: 16.7, discharges: 117162, readmissions: 19563 },
+  UT: { rate: 11.38, discharges: 20093, readmissions: 2286 },
+  VA: { rate: 16.49, discharges: 46088, readmissions: 7596 },
+  VT: { rate: 16.75, discharges: 5731, readmissions: 960 },
+  WA: { rate: 14.94, discharges: 33134, readmissions: 4951 },
+  WI: { rate: 15.82, discharges: 36753, readmissions: 5815 },
+  WV: { rate: 18.81, discharges: 20234, readmissions: 3807 },
+  WY: { rate: 13.47, discharges: 4421, readmissions: 596 }
 };
 
-// D3 gradient scale like Plotly Reds
-const colorScale = scaleSequential()
-  .domain([10, 19]) // % range
-  .interpolator(interpolateReds);
-
 const USMap = () => {
-  const [tooltipContent, setTooltipContent] = React.useState("");
+  const states = Object.keys(stateData);
+  const rates = states.map((abbr) => stateData[abbr].rate);
+
+  const hoverText = states.map((abbr) => {
+    const { rate, discharges, readmissions } = stateData[abbr];
+    return (
+      `${abbr}<br>` +
+      `Readmission Rate: ${rate.toFixed(2)}%<br>` +
+      `Discharges: ${discharges.toLocaleString()}<br>` +
+      `Readmissions: ${readmissions.toLocaleString()}`
+    );
+  });
 
   return (
     <div className="w-full flex flex-col items-center">
@@ -33,42 +76,54 @@ const USMap = () => {
         📍 Hospital Readmission Rates by State (CMS Data)
       </h2>
 
-      <Tooltip>{tooltipContent}</Tooltip>
-
-      <div className="w-full max-w-[800px]">
-        <ComposableMap projection="geoAlbersUsa" width={800} height={500}>
-          <Geographies geography={geoUrl}>
-            {({ geographies }) =>
-              geographies.map((geo) => {
-                const abbrev = geo.id;
-                const rate = stateReadmissionRates[abbrev];
-
-                return (
-                  <Geography
-                    key={geo.rsmKey}
-                    geography={geo}
-                    fill={rate ? colorScale(rate) : "#EEE"}
-                    stroke="#fff"
-                    onMouseEnter={() => {
-                      setTooltipContent(
-                        `${geo.properties.name}: ${rate ? rate.toFixed(2) : "N/A"}%`
-                      );
-                    }}
-                    onMouseLeave={() => {
-                      setTooltipContent("");
-                    }}
-                    style={{
-                      default: { outline: "none" },
-                      hover: { fill: "#4f46e5", outline: "none" }, // Indigo hover
-                      pressed: { outline: "none" }
-                    }}
-                  />
-                );
-              })
+      <Plot
+        data={[
+          {
+            type: "choropleth",
+            locationmode: "USA-states",
+            locations: states,
+            z: rates,
+            text: hoverText,
+            hoverinfo: "text",
+            zmin: 10,
+            zmax: 19,
+            colorscale: [
+              [0, "#f2f0f7"],
+              [0.125, "#dadaeb"],
+              [0.25, "#bcbddc"],
+              [0.375, "#9e9ac8"],
+              [0.5, "#807dba"],
+              [0.625, "#6a51a3"],
+              [0.75, "#54278f"],
+              [0.875, "#3f007d"],
+              [1, "#2f005a"]
+            ],
+            colorbar: {
+              title: "Readmission Rate (%)",
+              thickness: 15,
+              len: 0.75
+            },
+            marker: {
+              line: {
+                color: "white",
+                width: 1
+              }
             }
-          </Geographies>
-        </ComposableMap>
-      </div>
+          }
+        ]}
+        layout={{
+          geo: {
+            scope: "usa",
+            showlakes: true,
+            lakecolor: "rgb(255, 255, 255)"
+          },
+          margin: { t: 20, b: 0, l: 0, r: 0 },
+          height: 600,
+          width: 1000
+        }}
+        config={{ responsive: true }}
+        style={{ width: "100%", maxWidth: "1000px" }}
+      />
     </div>
   );
 };
