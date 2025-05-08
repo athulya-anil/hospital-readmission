@@ -54,7 +54,7 @@ const USMapWithHospitals = () => {
       {/* Map Section */}
       <div className="w-full lg:w-2/3 bg-white rounded-2xl shadow-md p-6 border border-gray-200">
         <h2 className="text-2xl font-semibold text-center text-gray-800 mb-6">
-          📍 Hospital Readmission Rates by State (CMS Data)
+          Hospital Readmission Rates by State (CMS Data)
         </h2>
         <div className="overflow-x-auto">
           <Plot
@@ -121,8 +121,8 @@ const USMapWithHospitals = () => {
       <div className="w-full lg:w-1/3 bg-white rounded-2xl shadow-md p-6 border border-gray-200">
         <h2 className="text-xl font-semibold text-gray-800 mb-4 text-center">
           {fullStateName
-            ? `🏥 Top Hospitals in ${fullStateName}`
-            : "🏥 Top Hospitals in Selected State"}
+            ? `Top Hospitals in ${fullStateName}`
+            : "Top Hospitals in Selected State"}
         </h2>
 
         <div className="overflow-y-auto max-h-[610px]">

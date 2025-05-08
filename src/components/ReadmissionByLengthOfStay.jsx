@@ -37,7 +37,7 @@ const ReadmissionByLengthOfStay = () => {
   return (
     <div className="border rounded-lg shadow bg-white p-6 w-full max-w-3xl mx-auto">
       <h2 className="text-2xl font-semibold text-slate-800 mb-4 text-center">
-        📈 Readmission Rate by Hospital Stay (Daily)
+        Readmission Rate by Hospital Stay
       </h2>
       <Plot
         data={[

@@ -67,7 +67,7 @@ const App = () => {
                       : "hover:text-blue-600 transition-colors"
                   }
                 >
-                  By Condition
+                  By Specialty
                 </NavLink>
               </li>
               <li>
