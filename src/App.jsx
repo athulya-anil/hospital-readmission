@@ -6,72 +6,145 @@ import ByConditionPage from "./pages/ByConditionPage";
 import ByLengthOfStayPage from "./pages/ByLengthOfStayPage";
 import ByDiagnosisPage from "./pages/ByDiagnosisPage";
 import ByMedicationPage from "./pages/ByMedicationPage";
-
+import HomePage from "./components/HomePage";
+import { NavLink } from "react-router-dom";
 
 const App = () => {
   return (
-    <div className="font-sans">
+    <div className="font-sans bg-gray-50 min-h-screen">
       {/* Header */}
-      <header className="bg-white shadow p-4 sticky top-0 z-10">
-        <nav className="flex justify-between items-center">
-          <h1 className="text-3xl font-bold text-gray-800">
-            Hospital Readmission Trends
-          </h1>
-          <ul className="flex space-x-4 text-gray-600 font-medium">
-            <li><Link to="/" className="hover:text-blue-500">Home</Link></li>
-            <li><Link to="/by-age-group" className="hover:text-blue-500">By Age Group</Link></li>
-	    <li><Link to="/by-length-of-stay" className="hover:text-blue-500">By Length of Stay</Link></li>
-	    <li><Link to="/by-condition" className="hover:text-blue-500">By Condition</Link></li>
-	    <li><Link to="/by-diagnosis" className="hover:text-blue-500">By Diagnosis</Link></li>
-	    <li><Link to="/by-medication" className="hover:text-blue-500">By Number of Medications</Link></li>
-            <li>
-              <a
-               href="/hospital-readmission/process-book.pdf"
-               className="hover:text-blue-500"
-               target="_blank"
-               rel="noopener noreferrer"
-              >
-               Process Book
-              </a>
-            </li>
-            <li><a href="#" className="hover:text-blue-500">Demo</a></li>
-          </ul>
-        </nav>
+      <header className="bg-white shadow-sm sticky top-0 z-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+          <nav className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+            <h1 className="text-2xl font-bold text-gray-800 text-center lg:text-left">
+              Hospital Readmission Trends
+            </h1>
+
+            <ul className="flex flex-wrap justify-center lg:justify-end gap-3 text-sm font-medium text-gray-600">
+              <li>
+                <NavLink
+                  to="/hospital-readmission/"
+                  className={({ isActive }) =>
+                    isActive &&
+                    window.location.pathname === "/hospital-readmission/"
+                      ? "text-blue-600 font-semibold transition-colors"
+                      : "hover:text-blue-600 transition-colors"
+                  }
+                >
+                  Home
+                </NavLink>
+              </li>
+              <li>
+                <NavLink
+                  to="/hospital-readmission/by-age-group"
+                  className={({ isActive }) =>
+                    isActive
+                      ? "text-blue-600 font-semibold transition-colors"
+                      : "hover:text-blue-600 transition-colors"
+                  }
+                >
+                  By Age Group
+                </NavLink>
+              </li>
+              <li>
+                <NavLink
+                  to="/hospital-readmission/by-length-of-stay"
+                  className={({ isActive }) =>
+                    isActive
+                      ? "text-blue-600 font-semibold transition-colors"
+                      : "hover:text-blue-600 transition-colors"
+                  }
+                >
+                  By Length of Stay
+                </NavLink>
+              </li>
+              <li>
+                <NavLink
+                  to="/hospital-readmission/by-condition"
+                  className={({ isActive }) =>
+                    isActive
+                      ? "text-blue-600 font-semibold transition-colors"
+                      : "hover:text-blue-600 transition-colors"
+                  }
+                >
+                  By Condition
+                </NavLink>
+              </li>
+              <li>
+                <NavLink
+                  to="/hospital-readmission/by-diagnosis"
+                  className={({ isActive }) =>
+                    isActive
+                      ? "text-blue-600 font-semibold transition-colors"
+                      : "hover:text-blue-600 transition-colors"
+                  }
+                >
+                  By Diagnosis
+                </NavLink>
+              </li>
+              <li>
+                <NavLink
+                  to="/hospital-readmission/by-medication"
+                  className={({ isActive }) =>
+                    isActive
+                      ? "text-blue-600 font-semibold transition-colors"
+                      : "hover:text-blue-600 transition-colors"
+                  }
+                >
+                  By Number of Medications
+                </NavLink>
+              </li>
+              <li>
+                <a
+                  href="/hospital-readmission/process-book.pdf"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-blue-600 transition-colors font-bold"
+                >
+                  Process Book
+                </a>
+              </li>
+              <li>
+                <a
+                  href="#"
+                  className="hover:text-blue-600 transition-colors font-bold"
+                >
+                  Demo
+                </a>
+              </li>
+            </ul>
+          </nav>
+        </div>
       </header>
 
-      {/* Route-based content */}
-      <Routes>
-        {/* Home Page */}
-        <Route
-          path="/"
-          element={
-            <>
-              {/* Overview */}
-              <section className="px-6 py-6 bg-gray-50 border-b">
-                <h2 className="text-xl font-semibold mb-2">Overview</h2>
-                <p className="text-gray-700 max-w-3xl">
-                  This interactive dashboard visualizes hospital readmission rates across the United States using CMS data. Hover over a state to view detailed statistics including discharge count and readmissions.
-                </p>
-              </section>
-
-              {/* US Map Section */}
-              <main className="p-6">
-                <USMap />
-              </main>
-            </>
-          }
-        />
-
-        {/* By Age Group Page */}
-        <Route path="/by-age-group" element={<ByAgeGroupPage />} />
-	<Route path="/by-length-of-stay" element={<ByLengthOfStayPage />} />
-	<Route path="/by-condition" element={<ByConditionPage />} />
-	<Route path="/by-diagnosis" element={<ByDiagnosisPage />} />
-	<Route path="/by-medication" element={<ByMedicationPage />} />
-      </Routes>
+      {/* Route-based Content */}
+      <main className="mx-auto px-4 py-6 sm:px-6 lg:px-8">
+        <Routes>
+          <Route path="/hospital-readmission/" element={<HomePage />} />
+          <Route
+            path="/hospital-readmission/by-age-group"
+            element={<ByAgeGroupPage />}
+          />
+          <Route
+            path="/hospital-readmission/by-length-of-stay"
+            element={<ByLengthOfStayPage />}
+          />
+          <Route
+            path="/hospital-readmission/by-condition"
+            element={<ByConditionPage />}
+          />
+          <Route
+            path="/hospital-readmission/by-diagnosis"
+            element={<ByDiagnosisPage />}
+          />
+          <Route
+            path="/hospital-readmission/by-medication"
+            element={<ByMedicationPage />}
+          />
+        </Routes>
+      </main>
     </div>
   );
 };
 
 export default App;
-

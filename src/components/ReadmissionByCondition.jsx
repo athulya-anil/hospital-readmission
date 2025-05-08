@@ -1,20 +1,23 @@
-import React, { useEffect, useState } from 'react';
-import * as d3 from 'd3';
-import Plot from 'react-plotly.js';
+import React, { useEffect, useState } from "react";
+import * as d3 from "d3";
+import Plot from "react-plotly.js";
 
 const ReadmissionByCondition = () => {
   const [plotData, setPlotData] = useState(null);
 
   useEffect(() => {
-    d3.csv('/hospital-readmission/hospital_readmissions.csv').then((data) => {
+    d3.csv("/hospital-readmission/hospital_readmissions.csv").then((data) => {
       const filtered = data.filter(
-        (d) => d.readmitted && d.medical_specialty && d.medical_specialty !== 'Missing'
+        (d) =>
+          d.readmitted &&
+          d.medical_specialty &&
+          d.medical_specialty !== "Missing"
       );
 
       const conditionRates = Array.from(
         d3.rollup(
           filtered,
-          (v) => d3.mean(v, (d) => (d.readmitted === 'yes' ? 1 : 0)) * 100,
+          (v) => d3.mean(v, (d) => (d.readmitted === "yes" ? 1 : 0)) * 100,
           (d) => d.medical_specialty
         )
       );
@@ -31,26 +34,51 @@ const ReadmissionByCondition = () => {
     });
   }, []);
 
-  if (!plotData) return <p>Loading chart...</p>;
+  if (!plotData) return <p></p>;
 
   return (
-    <Plot
-      data={[
-        {
-          x: plotData.x,
-          y: plotData.y,
-          type: 'bar',
-          marker: { color: 'rgba(255, 99, 132, 0.7)' },
-        },
-      ]}
-      layout={{
-        title: 'Top 10 Medical Specialties by Readmission Rate',
-        xaxis: { title: 'Medical Specialty', tickangle: -45 },
-        yaxis: { title: 'Readmission Rate (%)' },
-        margin: { b: 150, t: 50 },
-        height: 500,
-      }}
-    />
+    <div className="border rounded-lg shadow bg-white p-6 w-full max-w-3xl mx-auto">
+      <h2 className="text-2xl font-semibold text-slate-800 mb-4 text-center">
+        📈 Top 10 Medical Specialties by Readmission Rate
+      </h2>
+      <Plot
+        data={[
+          {
+            x: plotData.x,
+            y: plotData.y,
+            type: "bar",
+            marker: { color: "rgba(255, 99, 132, 0.7)" },
+            hovertemplate: "%{x}<br>Rate: %{y}%<extra></extra>",
+          },
+        ]}
+        layout={{
+          xaxis: {
+            title: {
+              text: "Medical Specialty",
+              font: { size: 16 },
+            },
+            tickangle: -45,
+            tickfont: { size: 14 },
+          },
+          yaxis: {
+            title: {
+              text: "Readmission Rate (%)",
+              font: { size: 16 },
+            },
+            tickfont: { size: 14 },
+          },
+          margin: { b: 150, t: 50, l: 60, r: 20 },
+          height: 450,
+          plot_bgcolor: "#f9f9fb",
+          paper_bgcolor: "#ffffff",
+        }}
+        config={{
+          responsive: true,
+          displayModeBar: false,
+        }}
+        style={{ width: "100%" }}
+      />
+    </div>
   );
 };
 

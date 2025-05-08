@@ -1,62 +1,13 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Plot from "react-plotly.js";
+import { stateData } from "../statedata";
+import { CMS_dataset } from "../cms_hospitals";
+import { stateAbbreviationToName } from "../stateAbbreviations";
 
-// Derived from CMS dataset (fully calculated)
-const stateData = {
-  AK: { rate: 14.49, discharges: 4031, readmissions: 584 },
-  AL: { rate: 16.79, discharges: 35359, readmissions: 5936 },
-  AR: { rate: 16.16, discharges: 31207, readmissions: 5042 },
-  AZ: { rate: 15.18, discharges: 43529, readmissions: 6607 },
-  CA: { rate: 17.68, discharges: 176090, readmissions: 31138 },
-  CO: { rate: 13.92, discharges: 34230, readmissions: 4765 },
-  CT: { rate: 17.23, discharges: 28597, readmissions: 4929 },
-  DC: { rate: 17.91, discharges: 4471, readmissions: 801 },
-  DE: { rate: 15.73, discharges: 9433, readmissions: 1484 },
-  FL: { rate: 17.69, discharges: 108804, readmissions: 19248 },
-  GA: { rate: 17.52, discharges: 50620, readmissions: 8867 },
-  HI: { rate: 15.57, discharges: 9444, readmissions: 1470 },
-  IA: { rate: 14.38, discharges: 24142, readmissions: 3472 },
-  ID: { rate: 11.17, discharges: 11783, readmissions: 1316 },
-  IL: { rate: 17.79, discharges: 74813, readmissions: 13309 },
-  IN: { rate: 16.76, discharges: 36085, readmissions: 6049 },
-  KS: { rate: 13.25, discharges: 17851, readmissions: 2364 },
-  KY: { rate: 17.87, discharges: 31564, readmissions: 5641 },
-  LA: { rate: 17.18, discharges: 34723, readmissions: 5968 },
-  MA: { rate: 17.16, discharges: 43541, readmissions: 7472 },
-  MD: { rate: 16.91, discharges: 37252, readmissions: 6298 },
-  ME: { rate: 13.68, discharges: 13119, readmissions: 1794 },
-  MI: { rate: 18.59, discharges: 62574, readmissions: 11628 },
-  MN: { rate: 14.51, discharges: 27473, readmissions: 3989 },
-  MO: { rate: 17.12, discharges: 42053, readmissions: 7202 },
-  MS: { rate: 17.66, discharges: 25929, readmissions: 4579 },
-  MT: { rate: 12.67, discharges: 9946, readmissions: 1260 },
-  NC: { rate: 15.84, discharges: 57779, readmissions: 9154 },
-  ND: { rate: 14.45, discharges: 6564, readmissions: 949 },
-  NE: { rate: 14.45, discharges: 14261, readmissions: 2061 },
-  NH: { rate: 15.92, discharges: 10087, readmissions: 1606 },
-  NJ: { rate: 17.87, discharges: 52880, readmissions: 9451 },
-  NM: { rate: 13.99, discharges: 16652, readmissions: 2329 },
-  NV: { rate: 18.16, discharges: 18480, readmissions: 3356 },
-  NY: { rate: 16.94, discharges: 97263, readmissions: 16474 },
-  OH: { rate: 17.64, discharges: 65353, readmissions: 11530 },
-  OK: { rate: 15.19, discharges: 28461, readmissions: 4325 },
-  OR: { rate: 13.63, discharges: 21413, readmissions: 2920 },
-  PA: { rate: 16.4, discharges: 77883, readmissions: 12764 },
-  RI: { rate: 15.46, discharges: 9647, readmissions: 1492 },
-  SC: { rate: 16.41, discharges: 35069, readmissions: 5757 },
-  SD: { rate: 10.33, discharges: 11021, readmissions: 1139 },
-  TN: { rate: 16.46, discharges: 42213, readmissions: 6952 },
-  TX: { rate: 16.7, discharges: 117162, readmissions: 19563 },
-  UT: { rate: 11.38, discharges: 20093, readmissions: 2286 },
-  VA: { rate: 16.49, discharges: 46088, readmissions: 7596 },
-  VT: { rate: 16.75, discharges: 5731, readmissions: 960 },
-  WA: { rate: 14.94, discharges: 33134, readmissions: 4951 },
-  WI: { rate: 15.82, discharges: 36753, readmissions: 5815 },
-  WV: { rate: 18.81, discharges: 20234, readmissions: 3807 },
-  WY: { rate: 13.47, discharges: 4421, readmissions: 596 }
-};
+const USMapWithHospitals = () => {
+  const [selectedState, setSelectedState] = useState(null);
+  const [filteredHospitals, setFilteredHospitals] = useState([]);
 
-const USMap = () => {
   const states = Object.keys(stateData);
   const rates = states.map((abbr) => stateData[abbr].rate);
 
@@ -70,62 +21,172 @@ const USMap = () => {
     );
   });
 
-  return (
-    <div className="w-full flex flex-col items-center">
-      <h2 className="text-2xl font-semibold text-center mb-4 text-slate-800">
-        📍 Hospital Readmission Rates by State (CMS Data)
-      </h2>
+  useEffect(() => {
+    if (selectedState) {
+      const filtered = CMS_dataset.filter(
+        (hosp) => hosp.state === selectedState
+      ).sort((a, b) => {
+        const rateA = a.rateOfReadmission;
+        const rateB = b.rateOfReadmission;
 
-      <Plot
-        data={[
-          {
-            type: "choropleth",
-            locationmode: "USA-states",
-            locations: states,
-            z: rates,
-            text: hoverText,
-            hoverinfo: "text",
-            zmin: 10,
-            zmax: 19,
-            colorscale: [
-              [0, "#f2f0f7"],
-              [0.125, "#dadaeb"],
-              [0.25, "#bcbddc"],
-              [0.375, "#9e9ac8"],
-              [0.5, "#807dba"],
-              [0.625, "#6a51a3"],
-              [0.75, "#54278f"],
-              [0.875, "#3f007d"],
-              [1, "#2f005a"]
-            ],
-            colorbar: {
-              title: "Readmission Rate (%)",
-              thickness: 15,
-              len: 0.75
-            },
-            marker: {
-              line: {
-                color: "white",
-                width: 1
-              }
-            }
-          }
-        ]}
-        layout={{
-          geo: {
-            scope: "usa",
-            showlakes: true,
-            lakecolor: "rgb(255, 255, 255)"
-          },
-          margin: { t: 20, b: 0, l: 0, r: 0 },
-          height: 600,
-          width: 1000
-        }}
-        config={{ responsive: true }}
-        style={{ width: "100%", maxWidth: "1000px" }}
-      />
+        if (rateA === null || rateA === undefined) return 1; // a goes after b
+        if (rateB === null || rateB === undefined) return -1; // b goes after a
+        return rateB - rateA; // Descending order
+      });
+
+      setFilteredHospitals(filtered);
+    } else {
+      setFilteredHospitals([]);
+    }
+  }, [selectedState]);
+
+  const handleClick = (event) => {
+    const clickedState = event.points[0].location;
+    setSelectedState(clickedState);
+  };
+
+  const fullStateName = selectedState
+    ? stateAbbreviationToName[selectedState]
+    : null;
+
+  return (
+    <div className="flex flex-col lg:flex-row items-start gap-8 p-6 bg-gray-50 min-h-screen">
+      {/* Map Section */}
+      <div className="w-full lg:w-2/3 bg-white rounded-2xl shadow-md p-6 border border-gray-200">
+        <h2 className="text-2xl font-semibold text-center text-gray-800 mb-6">
+          📍 Hospital Readmission Rates by State (CMS Data)
+        </h2>
+        <div className="overflow-x-auto">
+          <Plot
+            data={[
+              {
+                type: "choropleth",
+                locationmode: "USA-states",
+                locations: states,
+                z: rates,
+                text: hoverText,
+                hoverinfo: "text",
+                zmin: 10,
+                zmax: 19,
+                colorscale: [
+                  [0, "#f2f0f7"],
+                  [0.125, "#dadaeb"],
+                  [0.25, "#bcbddc"],
+                  [0.375, "#9e9ac8"],
+                  [0.5, "#807dba"],
+                  [0.625, "#6a51a3"],
+                  [0.75, "#54278f"],
+                  [0.875, "#3f007d"],
+                  [1, "#2f005a"],
+                ],
+                colorbar: {
+                  title: "Readmission Rate (%)",
+                  thickness: 15,
+                  len: 0.75,
+                },
+                marker: {
+                  line: {
+                    color: "white",
+                    width: 1,
+                  },
+                },
+              },
+            ]}
+            layout={{
+              geo: {
+                scope: "usa",
+                showlakes: true,
+                lakecolor: "rgb(255, 255, 255)",
+              },
+              projection: {
+                type: "albers usa",
+                scale: 1,
+              },
+              fitbounds: "locations",
+              margin: { t: 20, b: 0, l: 0, r: 0 },
+              height: 600,
+              width: 900,
+            }}
+            config={{
+              responsive: true,
+              scrollZoom: false, // prevents accidental zoom-out on scroll
+            }}
+            style={{ width: "100%", maxWidth: "900px" }}
+            onClick={handleClick}
+          />
+        </div>
+      </div>
+
+      {/* Hospital Table Section */}
+      <div className="w-full lg:w-1/3 bg-white rounded-2xl shadow-md p-6 border border-gray-200">
+        <h2 className="text-xl font-semibold text-gray-800 mb-4 text-center">
+          {fullStateName
+            ? `🏥 Top Hospitals in ${fullStateName}`
+            : "🏥 Top Hospitals in Selected State"}
+        </h2>
+
+        <div className="overflow-y-auto max-h-[610px]">
+          <table className="min-w-full text-sm border-separate border-spacing-y-2">
+            <thead className="bg-gray-100 text-gray-700 font-medium sticky top-0 z-10">
+              <tr>
+                <th className="px-3 py-2 text-left">Facility Name</th>
+                <th className="px-3 py-2 text-center">Discharges</th>
+                <th className="px-3 py-2 text-center">Readmissions</th>
+                <th className="px-3 py-2 text-center">Rate (%)</th>
+              </tr>
+            </thead>
+            <tbody>
+              {selectedState ? (
+                filteredHospitals.length > 0 ? (
+                  filteredHospitals.map((hosp) => (
+                    <tr
+                      key={hosp.id}
+                      className="bg-white border rounded-md shadow-sm hover:bg-gray-50 transition"
+                    >
+                      <td className="px-3 py-2">{hosp.name}</td>
+                      <td className="px-3 py-2 text-center">
+                        {hosp.numberOfDischarges
+                          ? hosp.numberOfDischarges.toLocaleString()
+                          : "-"}
+                      </td>
+                      <td className="px-3 py-2 text-center">
+                        {hosp.numberOfReadmissions
+                          ? hosp.numberOfReadmissions.toLocaleString()
+                          : "-"}
+                      </td>
+                      <td className="px-3 py-2 text-center">
+                        {hosp.rateOfReadmission
+                          ? `${hosp.rateOfReadmission}%`
+                          : "-"}
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td
+                      colSpan="4"
+                      className="text-center py-4 text-gray-500 italic"
+                    >
+                      No hospitals found for this state.
+                    </td>
+                  </tr>
+                )
+              ) : (
+                <tr>
+                  <td
+                    colSpan="4"
+                    className="text-center py-4 text-gray-500 italic"
+                  >
+                    Select a state to view hospitals.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
   );
 };
 
-export default USMap;
+export default USMapWithHospitals;
