@@ -1,5 +1,5 @@
 import React from "react";
-import { Routes, Route, Link } from "react-router-dom";
+import { Routes, Route, Link, NavLink } from "react-router-dom";
 import USMap from "./components/USMap";
 import ByAgeGroupPage from "./pages/ByAgeGroupPage";
 import ByConditionPage from "./pages/ByConditionPage";
@@ -7,7 +7,6 @@ import ByLengthOfStayPage from "./pages/ByLengthOfStayPage";
 import ByDiagnosisPage from "./pages/ByDiagnosisPage";
 import ByMedicationPage from "./pages/ByMedicationPage";
 import HomePage from "./components/HomePage";
-import { NavLink } from "react-router-dom";
 
 const App = () => {
   return (
@@ -106,7 +105,9 @@ const App = () => {
               </li>
               <li>
                 <a
-                  href="#"
+                  href="https://drive.google.com/file/d/11c13cJ4qbL4_vUKAtN5xIXvmymGuqE7_/view?usp=sharing"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="hover:text-blue-600 transition-colors font-bold"
                 >
                   Demo
