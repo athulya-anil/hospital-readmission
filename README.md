@@ -18,10 +18,10 @@ A choropleth map and several dynamic visualizations allow users to drill down in
 
 #### **a. Clone the Repository**
 
-git clone https://github.com/athulya-anil/hospital-readmission.git -> Clone the Repo 
-cd hospital-readmission -> Go into the Folder
-npm install -> Install Dependencies
-npm run dev -> Start the Development Server
+- git clone https://github.com/athulya-anil/hospital-readmission.git -> Clone the Repo 
+- cd hospital-readmission -> Go into the Folder
+- npm install -> Install Dependencies
+- npm run dev -> Start the Development Server
 
 ## **Dashboard Features**
 
