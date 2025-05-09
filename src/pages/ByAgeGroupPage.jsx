@@ -9,7 +9,7 @@ const ByAgeGroupPage = () => {
          Readmission Rate by Age Group
         </h2>
         <p className="text-gray-700 text-base mx-auto text-justify w-full max-w-5xl">
-         This chart illustrates how hospital readmission rates vary across different age groups, showing a pattern of increasing risk with advancing age. 
+         This chart illustrates how hospital readmission rates vary across different age groups, showing a pattern of increasing risk with age. 
         </p>
       </div>   
       <ReadmissionByAge />
