@@ -44,10 +44,10 @@ const ReadmissionByAge = () => {
             y: plotData.y,
             type: "bar",
             marker: {
-              color: "rgba(88, 29, 153, 0.8)",
+              color: "rgba(234, 139, 56, 0.8)",
               line: {
                 width: 1.5,
-                color: "rgba(88, 29, 153, 1)",
+                color: "rgba(234, 139, 56, 0.8)",
               },
             },
             hovertemplate: "%{x}<br>Rate: %{y}%<extra></extra>",
