@@ -95,7 +95,7 @@ const App = () => {
               </li>
               <li>
                 <a
-                  href="/hospital-readmission/process-book.pdf"
+                  href="/hospital-readmission/CS571_Process_Book_Exploring_the_factors_behind_Hospital_Readmission_Rates.pdf"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="hover:text-blue-600 transition-colors font-bold"
