@@ -113,6 +113,16 @@ const App = () => {
                   Demo
                 </a>
               </li>
+              <li>
+                <a
+                  href="https://github.com/athulya-anil/hospital-readmission"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-blue-600 transition-colors font-bold"
+                >
+                Code
+                </a>
+            </li>
             </ul>
           </nav>
         </div>
