@@ -1,5 +1,6 @@
 # **Hospital Readmission Dashboard**
 
+Website Link - https://athulya-anil.github.io/hospital-readmission/
 ## **Overview**
 This project presents an interactive dashboard to explore hospital readmission trends across the United States. It is designed to help identify patterns in readmission rates based on age group, diagnosis, length of stay, medications administered, and more. The dashboard was developed using React and D3.js as part of the final project for CS571 – Data Visualization and Exploration.
 
@@ -67,5 +68,4 @@ A choropleth map and several dynamic visualizations allow users to drill down in
 ## **Contributors**
 - **Athulya Anil** – `34760586` – athulyaanil@umass.edu  
 - **Priya Arunachalam** – `34743317` – iarunachalam@umass.edu  
-- **Rakshith Venkatesh** – `34767593` – rakshith@umass.edu
 
